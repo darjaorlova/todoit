@@ -1,6 +1,5 @@
 package lv.dt.todoit.ui.main
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
@@ -44,10 +43,15 @@ class ListActivity : AppCompatActivity() {
         }
     }
 
+    /*
+        TODO: Open form activity
+         1) Create an `Intent` for `FormActivity`
+         2) Put id of clicked item into extras (if it's not null)
+         3) Call `startActivity` and pass intent parameter
+          [Cheat 1]
+    */
     private fun openFormActivity(noteId: Long?) {
-        val intent = Intent(this, FormActivity::class.java)
-        noteId?.let { intent.putExtra("note_id", it) }
-        startActivity(intent)
+
     }
 
 }

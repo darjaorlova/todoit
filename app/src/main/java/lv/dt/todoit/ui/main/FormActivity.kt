@@ -2,18 +2,11 @@ package lv.dt.todoit.ui.main
 
 import android.app.DatePickerDialog
 import android.os.Bundle
-import android.view.Menu
 import android.view.MenuItem
 import android.widget.DatePicker
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
-import kotlinx.android.synthetic.main.activity_form.*
-import lv.dt.todoit.App
-import lv.dt.todoit.DeleteAsync
 import lv.dt.todoit.Note
 import lv.dt.todoit.R
-import lv.dt.todoit.SaveAsync
-import lv.dt.todoit.UpdateAsync
 import java.util.*
 
 
@@ -32,40 +25,37 @@ class FormActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
             setDisplayHomeAsUpEnabled(true)
         }
 
-        val currentNoteId = intent?.getLongExtra("note_id", 0) ?: 0
-        App.NOTES.getNote(currentNoteId).observe(this, Observer { nullableNote ->
-            currentNote = nullableNote
-
-            nullableNote?.let { notNullNote ->
-                currentDate = notNullNote.date
-                input_note.setText(notNullNote.note)
-                input_title.setText(notNullNote.title)
-            }
-
-            date.setText(nullableNote?.date ?: currentDate)
-        })
-
-        save.setOnClickListener {
-            currentNote
-                ?.let { idea -> updateNote(idea) }
-                ?: saveNote()
-            finish()
-        }
+        /*
+           TODO connect your layout with some actions:
+            1) Retrieve id of current note from `intent`
+            2) Fetch note from `App.NOTES` by observing changes
+            3) Cache data in `currentNote` for future use
+            4) If data is not empty(null) write existing values to inputs
+                  and save current date to currentDate
+            6) Add 'save' button click listener to either update or save
+                  note to database and finish activity
+            [Cheat 3]
+         */
     }
 
-    override fun onPrepareOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.form_menu, menu)
-        return true
-    }
+    /*
+        TODO implement delete button
+         1) Override `onPrepareOptionsMenu(Menu)` method of `AppCompatActivity`
+         2) Using `menuInflates` inflate `R.menu.form_menu`
+         3) Don`t forget to add `return true` so that menu is displayed
+         [Cheat 6]
+   */
+
+    /*
+        TODO implement delete button click handling
+         1) If `currentNote` is not null execute `DeleteAsync`
+         2) Finish current activity
+         3) Don't forget to `return true` to show that we handled the click
+         [Cheat 6]
+     */
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.id.action_delete) {
-            currentNote?.let { note ->
-                DeleteAsync().execute(note)
-            }
-            finish()
-            return true
-        } else if (item.itemId == android.R.id.home) {
+        if (item.itemId == android.R.id.home) {
             finish()
             return true
         } else if (item.itemId == R.id.action_date) {
@@ -88,25 +78,29 @@ class FormActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener {
         val d = dayOfMonth.formatWithZero()
         val m = (month + 1).formatWithZero()
         currentDate = "$d.$m.$year"
-        date.text = currentDate
+        //date.text = currentDate TODO uncomment this after step 3
     }
 
-    private fun updateNote(note: Note) {
-        val newNote = Note(
-            uid = note.uid,
-            date = currentDate,
-            title = input_title.text.toString(),
-            note = input_note.text.toString()
-        )
-        UpdateAsync().execute(newNote)
-    }
-
+    /*
+        TODO write a function that:
+         1) Takes text from inputs
+         2) Creates new Note object
+         3) Executes `SaveAsync` to save new note to database
+         [Cheat 4]
+   */
     private fun saveNote() {
-        val newNote = Note(
-            date = currentDate,
-            title = input_title.text.toString(),
-            note = input_note.text.toString()
-        )
-        SaveAsync().execute(newNote)
+
+    }
+
+
+    /*
+        TODO write a function that:
+         1) Takes text from inputs
+         2) Creates new Note object with same uid
+         3) Executes `UpdateAsync` to save idea changes to database
+         [Cheat 5]
+    */
+    private fun updateNote(note: Note) {
+
     }
 }
